@@ -25,44 +25,47 @@ export async function GET(req, { params }) {
 }
 
 export async function PATCH(req, { params }) {
-  // TODO: Implement event update endpoint
-  //
-  // Step 1: Verify JWT using verifyJWT(req). Return 401 if unauthorized.
-  //         Extract the event { id } from await params
-  //         Parse the request body with await req.json()
-  //
-  // Step 2: Build a partialUpdate object from the provided fields:
-  //         - title: use as-is
-  //         - date: convert to Date object using new Date(data.date)
-  //         - type: use as-is
-  //         - courseId: convert with new ObjectId(data.courseId) if truthy, otherwise set to null
-  //         - isCompleted: use as-is (boolean)
-  //         Only include fields where data.fieldName != null
-  //
-  // Step 3: If no valid fields provided (empty partialUpdate), return 400 with message "No valid fields"
-  //
-  // Step 4: Connect to MongoDB using getClientPromise(), get the "unipath" database
-  //         Verify the event exists and belongs to the user using findOne()
-  //         Query: { _id: new ObjectId(id), userId: new ObjectId(user.id) }
-  //         If not found, return 404 with message "Event not found"
-  //
-  // Step 5: Use updateOne() to apply { $set: partialUpdate } to the matching event
-  //         Return the result with status 200 and corsHeaders
-  //         Wrap in try-catch, return 400 on errors
+  const user = verifyJWT(req);
+  if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401, headers: corsHeaders });
+  const { id } = await params;
+  const data = await req.json();
+  const partialUpdate = {};
+
+  if (data.title != null) partialUpdate.title = data.title;
+  if (data.date != null) partialUpdate.date = new Date(data.date);
+  if (data.type != null) partialUpdate.type = data.type;
+  if (data.courseId != null) partialUpdate.courseId = data.courseId ? new ObjectId(data.courseId) : null;
+  if (data.isCompleted != null) partialUpdate.isCompleted = data.isCompleted;
+
+  if (Object.keys(partialUpdate).length === 0) {
+    return NextResponse.json({ message: "No valid fields" }, { status: 400, headers: corsHeaders });
+  }
+
+  try {
+    const client = await getClientPromise();
+    const db = client.db("unipath");
+    const existing = await db.collection("event").findOne({ _id: new ObjectId(id), userId: new ObjectId(user.id) });
+    if (!existing) return NextResponse.json({ message: "Event not found" }, { status: 404, headers: corsHeaders });
+
+    const result = await db.collection("event").updateOne({ _id: new ObjectId(id), userId: new ObjectId(user.id) }, { $set: partialUpdate });
+    return NextResponse.json(result, { status: 200, headers: corsHeaders });
+  } catch (exception) {
+    return NextResponse.json({ message: exception.toString() }, { status: 400, headers: corsHeaders });
+  }
 }
 
 export async function DELETE(req, { params }) {
-  // TODO: Implement event deletion endpoint
-  //
-  // Step 1: Verify JWT using verifyJWT(req). Return 401 if unauthorized.
-  //         Extract the event { id } from await params
-  //
-  // Step 2: Connect to MongoDB using getClientPromise(), get the "unipath" database
-  //         Use deleteOne() to delete the event matching:
-  //         { _id: new ObjectId(id), userId: new ObjectId(user.id) }
-  //
-  // Step 3: If result.deletedCount === 0, return 404 with message "Event not found"
-  //
-  // Step 4: Return success response with message "Event deleted" (status 200) and corsHeaders
-  //         Wrap in try-catch, return 400 on errors
+  const user = verifyJWT(req);
+  if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401, headers: corsHeaders });
+  const { id } = await params;
+
+  try {
+    const client = await getClientPromise();
+    const db = client.db("unipath");
+    const result = await db.collection("event").deleteOne({ _id: new ObjectId(id), userId: new ObjectId(user.id) });
+    if (result.deletedCount === 0) return NextResponse.json({ message: "Event not found" }, { status: 404, headers: corsHeaders });
+    return NextResponse.json({ message: "Event deleted" }, { status: 200, headers: corsHeaders });
+  } catch (exception) {
+    return NextResponse.json({ message: exception.toString() }, { status: 400, headers: corsHeaders });
+  }
 }

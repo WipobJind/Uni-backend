@@ -23,24 +23,27 @@ export async function GET(req) {
 }
 
 export async function PATCH(req) {
-  // TODO: Implement profile update endpoint
-  //
-  // Step 1: Verify the JWT token using verifyJWT(req)
-  //         If null, return 401 "Unauthorized" response with corsHeaders
-  //
-  // Step 2: Parse the request body using await req.json()
-  //
-  // Step 3: Build a partialUpdate object with only the fields that are provided (not null):
-  //         Allowed fields: firstname, lastname, major, enrollmentYear, targetGPA
-  //         Check each field: if (data.fieldName != null) partialUpdate.fieldName = data.fieldName
-  //
-  // Step 4: If partialUpdate has no keys (Object.keys(partialUpdate).length === 0),
-  //         return 400 response with message "No valid fields to update"
-  //
-  // Step 5: Connect to MongoDB using getClientPromise(), get the "unipath" database
-  //         Use updateOne() on the "user" collection to update the user matching { email: user.email }
-  //         Apply the update using { $set: partialUpdate }
-  //
-  // Step 6: Return the update result with status 200 and corsHeaders
-  //         Wrap in try-catch, return 500 with error message on errors
+  const user = verifyJWT(req);
+  if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401, headers: corsHeaders });
+
+  const data = await req.json();
+  const partialUpdate = {};
+  if (data.firstname != null) partialUpdate.firstname = data.firstname;
+  if (data.lastname != null) partialUpdate.lastname = data.lastname;
+  if (data.major != null) partialUpdate.major = data.major;
+  if (data.enrollmentYear != null) partialUpdate.enrollmentYear = data.enrollmentYear;
+  if (data.targetGPA != null) partialUpdate.targetGPA = data.targetGPA;
+
+  if (Object.keys(partialUpdate).length === 0) {
+    return NextResponse.json({ message: "No valid fields to update" }, { status: 400, headers: corsHeaders });
+  }
+
+  try {
+    const client = await getClientPromise();
+    const db = client.db("unipath");
+    const result = await db.collection("user").updateOne({ email: user.email }, { $set: partialUpdate });
+    return NextResponse.json(result, { status: 200, headers: corsHeaders });
+  } catch (error) {
+    return NextResponse.json({ message: error.toString() }, { status: 500, headers: corsHeaders });
+  }
 }

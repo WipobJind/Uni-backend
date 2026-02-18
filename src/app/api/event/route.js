@@ -30,33 +30,33 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-  // TODO: Implement event creation endpoint
-  //
-  // Step 1: Verify JWT using verifyJWT(req). Return 401 if unauthorized.
-  //
-  // Step 2: Parse the request body using await req.json()
-  //         Destructure { title, date, type, courseId, isCompleted }
-  //
-  // Step 3: Validate that title and date are provided
-  //         If either is missing, return 400 with message "Missing title or date"
-  //
-  // Step 4: Validate the event type against allowed values: ["Exam", "Assignment", "Study", "Other"]
-  //         If the provided type is not in the list, default to "Other"
-  //
-  // Step 5: Connect to MongoDB using getClientPromise(), get the "unipath" database
-  //         If a courseId is provided, verify the course exists and belongs to the user:
-  //         findOne({ _id: new ObjectId(courseId), userId: new ObjectId(user.id) })
-  //         If the course doesn't exist, return 404 with message "Course not found"
-  //
-  // Step 6: Insert the new event into the "event" collection with these fields:
-  //         - userId: new ObjectId(user.id)
-  //         - title: the provided title
-  //         - date: new Date(date) — convert the date string to a Date object
-  //         - type: the validated event type
-  //         - courseId: new ObjectId(courseId) if provided, otherwise null
-  //         - isCompleted: provided value or false as default
-  //         - createdAt: new Date()
-  //
-  // Step 7: Return { id: result.insertedId } with status 200 and corsHeaders
-  //         Wrap in try-catch, return 400 on errors
+  const user = verifyJWT(req);
+  if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401, headers: corsHeaders });
+
+  const { title, date, type, courseId, isCompleted } = await req.json();
+
+  if (!title || !date) {
+    return NextResponse.json({ message: "Missing title or date" }, { status: 400, headers: corsHeaders });
+  }
+
+  const validTypes = ["Exam", "Assignment", "Study", "Other"];
+  const eventType = validTypes.includes(type) ? type : "Other";
+
+  try {
+    const client = await getClientPromise();
+    const db = client.db("unipath");
+
+    if (courseId) {
+      const course = await db.collection("course").findOne({ _id: new ObjectId(courseId), userId: new ObjectId(user.id) });
+      if (!course) return NextResponse.json({ message: "Course not found" }, { status: 404, headers: corsHeaders });
+    }
+
+    const result = await db.collection("event").insertOne({
+      userId: new ObjectId(user.id), title, date: new Date(date), type: eventType,
+      courseId: courseId ? new ObjectId(courseId) : null, isCompleted: isCompleted || false, createdAt: new Date(),
+    });
+    return NextResponse.json({ id: result.insertedId }, { status: 200, headers: corsHeaders });
+  } catch (exception) {
+    return NextResponse.json({ message: exception.toString() }, { status: 400, headers: corsHeaders });
+  }
 }

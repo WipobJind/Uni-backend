@@ -19,59 +19,38 @@ export async function GET(req) {
     const db = client.db("unipath");
     const courses = await db.collection("course").find({ userId: new ObjectId(user.id) }).toArray();
 
-    // TODO: Calculate GPA and course statistics from the courses array
-    //
-    // Step 1: Initialize tracking variables:
-    //         - totalPoints = 0 (sum of grade points × credits)
-    //         - totalCredits = 0 (credits of graded completed courses)
-    //         - completedCredits = 0 (credits of all completed courses)
-    //         - totalPlannedCredits = 0 (credits of all courses regardless of status)
-    //         - statusCounts = { Planned: 0, "In-Progress": 0, Completed: 0 }
-    //
-    // Step 2: Loop through each course and:
-    //         - Get the course credits (default to 3 if not set)
-    //         - Add credits to totalPlannedCredits
-    //         - Increment the matching statusCounts[course.status] entry
-    //         - If course.status is "Completed":
-    //           - Add credits to completedCredits
-    //           - If the course has a valid grade (exists in gradePoints map):
-    //             - Add (gradePoints[course.grade] × credits) to totalPoints
-    //             - Add credits to totalCredits
-    //
-    // Step 3: Calculate GPA:
-    //         - If totalCredits > 0: gpa = (totalPoints / totalCredits).toFixed(2)
-    //         - Otherwise: gpa = "N/A"
+    let totalPoints = 0, totalCredits = 0, completedCredits = 0, totalPlannedCredits = 0;
+    const statusCounts = { Planned: 0, "In-Progress": 0, Completed: 0 };
 
-    // TODO: Fetch upcoming events for the next 7 days
-    //
-    // Step 1: Create a Date object for "now" and another for "nextWeek" (now + 7 days)
-    //         Use nextWeek.setDate(nextWeek.getDate() + 7)
-    //
-    // Step 2: Query the "event" collection for events where:
-    //         - userId matches the current user (new ObjectId(user.id))
-    //         - date is between now and nextWeek: { $gte: now, $lte: nextWeek }
-    //         - isCompleted is false
-    //         Sort by date ascending (.sort({ date: 1 })), limit to 10 results (.limit(10))
-    //         Convert to array with .toArray()
+    courses.forEach((course) => {
+      const credits = course.credits || 3;
+      totalPlannedCredits += credits;
+      if (statusCounts[course.status] !== undefined) statusCounts[course.status]++;
+      if (course.status === "Completed") {
+        completedCredits += credits;
+        if (course.grade && gradePoints[course.grade] !== undefined) {
+          totalPoints += gradePoints[course.grade] * credits;
+          totalCredits += credits;
+        }
+      }
+    });
 
-    // TODO: Fetch user profile and return the dashboard response
-    //
-    // Step 1: Get the user profile from the "user" collection using findOne({ email: user.email })
-    //         Exclude the password field: { projection: { password: 0 } }
-    //
-    // Step 2: Return a JSON response using NextResponse.json() containing:
-    //         {
-    //           gpa,
-    //           totalCourses: courses.length,
-    //           completedCredits,
-    //           totalPlannedCredits,
-    //           progressPercent: totalPlannedCredits > 0 ? Math.round((completedCredits / totalPlannedCredits) * 100) : 0,
-    //           statusCounts,
-    //           targetGPA: profile?.targetGPA || 4.0,
-    //           upcomingEvents
-    //         }
-    //         Include corsHeaders in the response options
+    const gpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "N/A";
 
+    const now = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const upcomingEvents = await db.collection("event").find({
+      userId: new ObjectId(user.id), date: { $gte: now, $lte: nextWeek }, isCompleted: false,
+    }).sort({ date: 1 }).limit(10).toArray();
+
+    const profile = await db.collection("user").findOne({ email: user.email }, { projection: { password: 0 } });
+
+    return NextResponse.json({
+      gpa, totalCourses: courses.length, completedCredits, totalPlannedCredits,
+      progressPercent: totalPlannedCredits > 0 ? Math.round((completedCredits / totalPlannedCredits) * 100) : 0,
+      statusCounts, targetGPA: profile?.targetGPA || 4.0, upcomingEvents,
+    }, { headers: corsHeaders });
   } catch (exception) {
     return NextResponse.json({ message: exception.toString() }, { status: 500, headers: corsHeaders });
   }
