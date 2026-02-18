@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# UniPath Backend
 
-## Getting Started
+## Team Members
+- [Wipob Jindapornsuk](https://github.com/WipobJind)
+- [Jakawat Wongcharuen](https://github.com/Jakawat)
 
-First, run the development server:
+## Description
+Backend API for UniPath — a strategic academic planning platform for university students.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Frontend repository: [unipath-frontend](https://github.com/WipobJind/Uni-frontend)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Tech Stack
+- Next.js (App Router, Route Handlers)
+- MongoDB Atlas
+- Deployment: Azure Virtual Machine
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### API Endpoints
+- POST /api/user — Register
+- POST /api/user/login — Login
+- POST /api/user/logout — Logout
+- GET/PATCH /api/user/profile — Profile
+- GET/POST /api/course — List and create courses
+- GET/PATCH/DELETE /api/course/:id — Course detail
+- GET/POST /api/event — List and create events
+- GET/PATCH/DELETE /api/event/:id — Event detail
+- GET /api/dashboard — GPA and progress summary
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Screenshots
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Login
+<img width="1706" height="1102" alt="Image" src="https://github.com/user-attachments/assets/3f325831-32b6-4cd5-bce5-4a50b87b72e4" />
+- Register
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/e4952725-f274-4841-a1d6-839f41f83aba" />
+- Dashboard
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/d6703147-2a96-47ca-9758-8c298668ed42" />
+- Courses
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/ec4dfd2f-aa15-438f-a9fc-e7b785e4e79c" />
+- Events
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/51b45863-e515-487a-89d5-4b54dad64813" />
+- Profile
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/dd22fc24-a72e-41a7-85e1-b0a69f7afc66" />
