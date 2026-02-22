@@ -36,10 +36,10 @@ Frontend repository: [unipath-frontend](https://github.com/WipobJind/Uni-fronten
 <img width="1709" height="944" alt="Image" src="https://github.com/user-attachments/assets/795ccdcf-2c6a-45dd-8ee1-fdc3ad4ae90d" />
 
 - Courses
-<img width="1710" height="948" alt="Image" src="https://github.com/user-attachments/assets/f018879d-9973-4464-bc7c-ed13efc8177c" />
+<img width="1706" height="942" alt="Image" src="https://github.com/user-attachments/assets/37e98430-f03e-47fb-9f87-dea8d7a64b8d" />
 
 - Events
-<img width="1707" height="946" alt="Image" src="https://github.com/user-attachments/assets/c4f7067a-95d9-4f18-8df8-6f96d3573f5f" />
+<img width="1710" height="947" alt="Image" src="https://github.com/user-attachments/assets/d7b31e16-54b7-4440-8c46-a9b685b67be2" />
 
 - Profile
-<img width="1708" height="946" alt="Image" src="https://github.com/user-attachments/assets/b5120735-4e5d-4ddf-9127-739c6c3b0925" />
+<img width="1705" height="940" alt="Image" src="https://github.com/user-attachments/assets/9f9ca2cf-5a8b-4c7f-b88a-843d05eebe1b" />
