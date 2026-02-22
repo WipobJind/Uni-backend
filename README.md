@@ -28,19 +28,18 @@ Frontend repository: [unipath-frontend](https://github.com/WipobJind/Uni-fronten
 ## Screenshots
 
 - Login
-<img width="1706" height="1102" alt="Image" src="https://github.com/user-attachments/assets/3f325831-32b6-4cd5-bce5-4a50b87b72e4" />
-
+<img width="1710" height="953" alt="Image" src="https://github.com/user-attachments/assets/0eaa5ec2-1fa3-4d12-a2bd-7f2d8a27c222" />
 - Register
-<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/e4952725-f274-4841-a1d6-839f41f83aba" />
+<img width="1710" height="948" alt="Image" src="https://github.com/user-attachments/assets/510fae3f-1d98-4388-b1e4-ba328b68b7b4" />
 
 - Dashboard
-<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/d6703147-2a96-47ca-9758-8c298668ed42" />
+<img width="1709" height="944" alt="Image" src="https://github.com/user-attachments/assets/795ccdcf-2c6a-45dd-8ee1-fdc3ad4ae90d" />
 
 - Courses
-<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/34233a8b-8e45-4144-ab4e-b6861c8db0e3" />
+<img width="1710" height="948" alt="Image" src="https://github.com/user-attachments/assets/f018879d-9973-4464-bc7c-ed13efc8177c" />
 
 - Events
-<img width="1708" height="1103" alt="Image" src="https://github.com/user-attachments/assets/97485325-e3a4-4776-b69a-a719dd3248f7" />
+<img width="1707" height="946" alt="Image" src="https://github.com/user-attachments/assets/c4f7067a-95d9-4f18-8df8-6f96d3573f5f" />
 
 - Profile
-<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/a174809c-33aa-439c-9749-ce491fbffe3a" />
+<img width="1708" height="946" alt="Image" src="https://github.com/user-attachments/assets/b5120735-4e5d-4ddf-9127-739c6c3b0925" />
